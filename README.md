@@ -4,7 +4,6 @@
 DirectComposition is typically used by native windows applications to render bitmap graphics and is seldom used by games. Its less of a graphics pipeline and more of a composition engine that moves around and animates already rendered scenes from a graphics pipeline like DirectX or Direct2D. It is referred to as a bitmap composition engine by Microsoft.
 
 ### We Can't Use DirectX Hooks
-IMAGE1
 ![Screenshot_1](https://raw.githubusercontent.com/dognews/DirectCompositionHook/refs/heads/main/resources/Image1.png)<br/>
 Using a DirectX hook would be more conventional, as when running your cheat in the hook we could also read memory from the game without an additional context switch, and synchronize perfectly with the frame-rate of the game. However, DirectX function calls in modern windows versions are no longer routed through data pointers in win32k, meaning DirectX hooks are not feasible.
 
