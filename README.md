@@ -1,3 +1,5 @@
+# Direct Composition Hook Writeup
+
 ### What is DirectComposition?
 DirectComposition is typically used by native windows applications to render bitmap graphics and is seldom used by games. Its less of a graphics pipeline and more of a composition engine that moves around and animates already rendered scenes from a graphics pipeline like DirectX or Direct2D. It is referred to as a bitmap composition engine by Microsoft.
 ### We Can't Use DirectX Hooks
@@ -10,7 +12,7 @@ DirectComposition functions are still routed through win32k, meaning we can plac
 DirectComposition hooks do not sync perfectly with the refresh rate of the game. Games may render frames faster or slower than the refresh rate of the monitor, depending on GPU load and game settings. The main goal here is the synchronization of kernel drawing, which does occur when hooking DirectComposition's present function. 
 ### Addressing DirectComposition Hook Issues
 We can prevent the cheat from running slower or faster than the game by turning on VSYNC, or limiting the refresh rate of the game to that of the monitor. This will ensure that DirectComposition refreshes at the same rate as the game. It’s frustrating that games don’t actually use DirectComposition, so we cant just read their memory when they call a DirectComposition function. Despite this, it’s still very trivial to read memory, we can just attach to the process using KeStackAttachProcess then read game memory. Detection vectors aside (for kernel anticheats), this is a very efficient process and only involves a single context switch per frame to read memory.
-# How does this work?
+### How does this work?
 IMAGE3
 I am mainly looking at this from the perspective of the kernel, and not through any user mode lens. I found this function searching through NT functions in win32k that looked to be related to a graphics API of some sort and would only be called once per frame. I started with DirectX then realized DirectX functions were no longer routed through win32k. Instead I focused on alternative rendering functions and found a whole set of DirectComposition functions. I tested several of these functions, and realized the ones that are called consistently were called by multiple processes using DirectComposition. I created a test driver that hooked all of the functions related to DirectComposition (NtDComposition functions) and recorded the number of calls that occurred in a second. I added a guard that only let the counter increment when one process calls (DWM Process). I didn't test every function all at once. I went in a sequential order and NtDCompositionBeginFrame was the first to meet my criteria. There is likely other DirectComposition functions that do the same thing if you want to experiment with this. 
 ### How can we use this in a cheat
