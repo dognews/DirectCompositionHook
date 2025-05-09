@@ -11,7 +11,7 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath) 
 	}
 
 	// Setup request handler
-	if (!NT_SUCCESS(HookFunction(336LL, 768LL, &previous_requestfunc, &RequestHandler))) {
+	if (!NT_SUCCESS(HookFunction(336LL, 760LL, &previous_requestfunc, &RequestHandler))) {
 		ObDereferenceObject(driver_context->dwm);
 		MmFreeContiguousMemory(driver_context);
 
